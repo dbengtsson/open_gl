@@ -24,7 +24,7 @@ unsigned int Texture::loadTexture(const char* imagePath) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    Image textureImage(imagePath);
+    Image textureImage(imagePath, true);
     if (textureImage.getData())
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureImage.getWidth(), textureImage.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, textureImage.getData());

@@ -1,5 +1,5 @@
-#ifndef WINDOWMGR_H
-#define WINDOWMGR_H
+#ifndef WINDOW_MGR_H
+#define WINDOW_MGR_H
 
 #include <GLFW/glfw3.h>
 
