@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "windowmgr.h"
 #include "shader.h"
 #include "texture.h"
 #include "image.h"
@@ -28,9 +29,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
 class Application {
 private:
-    GLFWwindow* window;
+    // GLFWwindow* window;
+    GLFWwindow* _window;
     uint32_t vertexBufferObject, vertexArrayObject, EBO;
-    Shader *m_shader;
+    Shader *_shader;
 
     glm::vec3 cubePositions[OBJECT_COUNT];
     float cubeRotation[OBJECT_COUNT];
@@ -53,15 +55,17 @@ private:
     glm::vec2 mousePosition = glm::vec2(-1.0f);
 
     void init() {
-        initWindow();
+        // Initialize GLFW lib
+        glfwInit();
+        // Set OpenGL version to target
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        // Enable mouse input
-        createCursor();
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        glfwSetCursor(window, cursor);
-        glfwSetCursorPosCallback(window, static_mouse_callback);
+        // Create target window
+        _window = WindowMgr::instance().createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
 
-        m_shader = new Shader(VERTEX_SHADER_FILEPATH, FRAGMENT_SHADER_FILEPATH);
+        _shader = new Shader(VERTEX_SHADER_FILEPATH, FRAGMENT_SHADER_FILEPATH);
 
         glGenVertexArrays(1, &vertexArrayObject);
         glGenBuffers(1, &vertexBufferObject);
@@ -76,6 +80,13 @@ private:
         //     -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
         //     -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
         // };
+
+        // Enable mouse input
+        // createCursor();
+        // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        // glfwSetCursor(window, cursor);
+        // glfwSetCursorPosCallback(window, static_mouse_callback);
+
 
         float vertices[] = {
             -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -165,37 +176,36 @@ private:
         m_loadedTextures[1] = new Texture(TEXTURE1_FILEPATH);
     }
 
-    void createCursor() {
-        Image img("res/mouse_cursor.tga");
+    // void createCursor() {
+    //     Image img("res/mouse_cursor.tga");
         
-        GLFWimage image;
-        image.width = img.getWidth();
-        image.height = img.getHeight();
-        image.pixels = img.getData();
+    //     GLFWimage image;
+    //     image.width = img.getWidth();
+    //     image.height = img.getHeight();
+    //     image.pixels = img.getData();
         
-        cursor = glfwCreateCursor(&image, 0, 0);
-    }
+    //     cursor = glfwCreateCursor(&image, 0, 0);
+    // }
 
-    void initWindow() {
-        glfwInit();
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // // void initWindow() {
+    // //     glfwInit();
+    // //     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    // //     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // //     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
-        glfwSetWindowSizeCallback(window, Application::CallbackResize);
-        if (window == nullptr) {
-            glfwTerminate();
-            throw std::runtime_error("Failed to instantiate GLFW window");
-        }
+    // //     window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
+    // //     if (window == nullptr) {
+    // //         glfwTerminate();
+    // //         throw std::runtime_error("Failed to instantiate GLFW window");
+    // //     }
 
-        glfwMakeContextCurrent(window);
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-            throw std::runtime_error("Failed to initialize GLAD");
-        }
+    // //     glfwMakeContextCurrent(window);
+    // //     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    // //         throw std::runtime_error("Failed to initialize GLAD");
+    // //     }
 
-        glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    }
+    // //     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    // // }
 
     void processInput(GLFWwindow* window) {
         if(glfwGetKey(window, GLFW_KEY_ESCAPE)) {
@@ -214,7 +224,7 @@ private:
             cameraPosition += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     }
 
-    void render() {
+    void render(GLFWwindow *window) {
         float time = glfwGetTime();
         deltaTime = time - lastUpdateTime;
         lastUpdateTime = time;
@@ -234,9 +244,9 @@ private:
         glActiveTexture(GL_TEXTURE1); // activate the texture unit first before binding texture
         glBindTexture(GL_TEXTURE_2D, m_loadedTextures[1]->id());
 
-        m_shader->use();
-        m_shader->setValue("texture1", 0);
-        m_shader->setValue("texture2", 1);
+        _shader->use();
+        _shader->setValue("texture1", 0);
+        _shader->setValue("texture2", 1);
 
         
         // float rotation = sin(time * 2) * -45.0f;
@@ -251,7 +261,7 @@ private:
         // m_shader->setValue("transform", transform);
 
         float blend = 0.5f * (1.0f + sin(2 * M_PI * 0.5f * time));
-        m_shader->setValue("blending", blend);
+        _shader->setValue("blending", blend);
 
         // Camera
         // // Spinning camera
@@ -274,11 +284,11 @@ private:
         // Non free-look camera
         // view = glm::lookAt(cameraPosition, cameraTarget, cameraUp);
         view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
-        m_shader->setViewMatrix(view);
+        _shader->setViewMatrix(view);
 
         // Projection Matrix
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)(WINDOW_WIDTH / WINDOW_HEIGHT), 0.1f, 10000.0f);
-        m_shader->setProjectionMatrix(projection);
+        _shader->setProjectionMatrix(projection);
 
         glBindVertexArray(vertexArrayObject);
         // // single box
@@ -296,7 +306,7 @@ private:
             float rotation = time * cubeRotation[i];
             // model = glm::rotate(model, glm::radians(time * 50), glm::vec3(0.0f, 1.0f, 0.0f));
             model = glm::rotate(model, glm::radians(rotation), glm::vec3(1.0f, 0.5f, 0.0f));
-            m_shader->setModelMatrix(model);
+            _shader->setModelMatrix(model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
@@ -322,17 +332,16 @@ private:
         glfwSwapBuffers(window);
     }
 
-    void mainLoop() {
+    void mainLoop(GLFWwindow *window) {
         while(!glfwWindowShouldClose(window)) {
             processInput(window);
-            render();
+            render(window);
             glfwPollEvents();
         }
     }
 
     void cleanup() {
-        glfwTerminate();
-        delete m_shader;
+        delete _shader;
         unsigned int arr_size = sizeof(m_loadedTextures)/sizeof(m_loadedTextures[0]);
         for(int i = 0; i < arr_size; i++) {
             delete m_loadedTextures[i]; // delete the objects in the array also, who cares rn
@@ -342,22 +351,19 @@ private:
 public:
     void run() {
         init();
-        mainLoop();
+        if (_window != nullptr) {
+            mainLoop(_window);
+        }
         cleanup();
     }
 
-    void actual_mouse_callback(GLFWwindow* window, double mouseX, double mouseY) {
-        mousePosition = glm::vec2(mouseX, (float)WINDOW_HEIGHT - mouseY);
-    }
+    // void actual_mouse_callback(GLFWwindow* window, double mouseX, double mouseY) {
+    //     mousePosition = glm::vec2(mouseX, (float)WINDOW_HEIGHT - mouseY);
+    // }
 
-    // Maybe create window class to handle window stuff
-    static void CallbackResize(GLFWwindow* window, int width, int height) {
-        glViewport(0, 0, width, height);
-    }
-
-    static void static_mouse_callback(GLFWwindow* window, double mouseX, double mouseY) {
-        Application::getInstance().actual_mouse_callback(window, mouseX, mouseY);
-    }
+    // static void static_mouse_callback(GLFWwindow* window, double mouseX, double mouseY) {
+    //     Application::getInstance().actual_mouse_callback(window, mouseX, mouseY);
+    // }
 
     static Application& getInstance() // Singleton is accessed via getInstance()
     {
