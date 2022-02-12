@@ -1,6 +1,7 @@
 #ifndef I_SCENE_H
 #define I_SCENE_H
 #include "../objects/i_scene_object.h"
+#include "../constants.h"
 
 class IScene {
 protected:

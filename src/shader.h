@@ -6,7 +6,7 @@
 // TODO: Add serialization of shaders so it's not visible in distribution
 class Shader {
 private:
-    unsigned int m_id;
+    unsigned int _id;
 public:
     Shader(const char* vertexShaderPath, const char* fragmentShaderPath);
     void use();
@@ -20,7 +20,7 @@ public:
     void setViewMatrix(const glm::mat4& matrix);
     void setModelMatrix(const glm::mat4& matrix);
 
-    unsigned int id() { return m_id; }
+    unsigned int id() { return _id; }
 };
 
 #endif

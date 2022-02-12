@@ -18,10 +18,7 @@
 #include "shader.h"
 #include "texture.h"
 #include "image.h"
-
-const uint32_t WINDOW_WIDTH = 1366;
-const uint32_t WINDOW_HEIGHT = 768;
-const char* WINDOW_TITLE = "Världens bästa spel";
+#include "constants.h"
 
 const unsigned int OBJECT_COUNT = 1000;
 const float OBJECT_SPREAD = 100.0f;

@@ -4,9 +4,9 @@
 #include <iostream>
 
 Image::~Image() {
-    std::cout << "Unloading image from memory: " << filePath;
+    // std::cout << "Unloading image from memory: " << filePath;
     stbi_image_free(data);
-    std::cout << "... DONE" << std::endl;
+    // std::cout << "... DONE" << std::endl;
 }
 
 Image::Image(const char* filePath) {
@@ -19,8 +19,8 @@ Image::Image(const char* filePath, bool flipVertically) {
 }
 
 void Image::load(const char* filePath) {
-    std::cout << "Loading image from disk: " << filePath;
+    // std::cout << "Loading image from disk: " << filePath;
     this->data = stbi_load(filePath, &width, &height, &nrChannels, 0);
     this->filePath = filePath;
-    std::cout << "... DONE" << std::endl;
+    // std::cout << "... DONE" << std::endl;
 }

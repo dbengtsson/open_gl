@@ -68,16 +68,16 @@ Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath) {
     };
     
     // shader Program
-    m_id = glCreateProgram();
-    glAttachShader(m_id, vertex);
-    glAttachShader(m_id, fragment);
-    glLinkProgram(m_id);
+    _id = glCreateProgram();
+    glAttachShader(_id, vertex);
+    glAttachShader(_id, fragment);
+    glLinkProgram(_id);
     // print linking errors if any
-    glGetProgramiv(m_id, GL_LINK_STATUS, &success);
+    glGetProgramiv(_id, GL_LINK_STATUS, &success);
 
     if(!success)
     {
-        glGetProgramInfoLog(m_id, 512, NULL, infoLog);
+        glGetProgramInfoLog(_id, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
     }
     
@@ -87,41 +87,41 @@ Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath) {
 }
 
 void Shader::use() {
-    glUseProgram(m_id);
+    glUseProgram(_id);
 }
 
 void Shader::setValue(const std::string &name, bool value) {
-    glUniform1i(glGetUniformLocation(m_id, name.c_str()), (int)value);
+    glUniform1i(glGetUniformLocation(_id, name.c_str()), (int)value);
 }
 
 void Shader::setValue(const std::string &name, float value) {
-    glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
+    glUniform1f(glGetUniformLocation(_id, name.c_str()), value);
 }
 
 void Shader::setValue(const std::string &name, double value) {
-    glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
+    glUniform1f(glGetUniformLocation(_id, name.c_str()), value);
 }
 
 void Shader::setValue(const std::string &name, int value) {
-    glUniform1i(glGetUniformLocation(m_id, name.c_str()), value);
+    glUniform1i(glGetUniformLocation(_id, name.c_str()), value);
 }
 
 void Shader::setValue(const std::string &name, glm::mat4 value) {
-    unsigned int transformLoc = glGetUniformLocation(m_id, name.c_str());
+    unsigned int transformLoc = glGetUniformLocation(_id, name.c_str());
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(value));
 }
 
 void Shader::setProjectionMatrix(const glm::mat4& matrix) {
-    unsigned int transformLoc = glGetUniformLocation(m_id, "projection");
+    unsigned int transformLoc = glGetUniformLocation(_id, "projection");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 void Shader::setViewMatrix(const glm::mat4& matrix) {
-    unsigned int transformLoc = glGetUniformLocation(m_id, "view");
+    unsigned int transformLoc = glGetUniformLocation(_id, "view");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 void Shader::setModelMatrix(const glm::mat4& matrix) {
-    unsigned int transformLoc = glGetUniformLocation(m_id, "model");
+    unsigned int transformLoc = glGetUniformLocation(_id, "model");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(matrix));
 }

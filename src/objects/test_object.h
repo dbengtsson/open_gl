@@ -14,9 +14,7 @@ const char* TEXTURE0_FILEPATH = "res/karingo.tga";
 const char* TEXTURE1_FILEPATH = "res/hunt.tga";
 
 class TestObject : public ISceneObject {
-private: 
-    glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
-
+private:
     float rotation = 30.0f;
     // TODO: Do not have these per object basis.
     // Pass in scene and have a resource manager there
@@ -69,8 +67,10 @@ private:
 public:
     ~TestObject();
     TestObject();
-    void update(unsigned int deltaTime);
-    void render();
+    void update(unsigned int deltaTime) override;
+    void render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) override;
+
+    void position(const glm::vec3& position) { _position = position; }
 };
 
 TestObject::~TestObject() {
@@ -81,6 +81,7 @@ TestObject::~TestObject() {
 }
 
 TestObject::TestObject() {
+    _position = glm::vec3(0.0f);
     _shader = new Shader(VERTEX_SHADER_FILEPATH, FRAGMENT_SHADER_FILEPATH);
 
     glGenVertexArrays(1, &vertexArrayObject);
@@ -107,7 +108,7 @@ TestObject::TestObject() {
 
 void TestObject::update(unsigned int deltaTime) {};
 
-void TestObject::render() {
+void TestObject::render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
     // Bind which VAO OpenGL should use
     glBindVertexArray(vertexArrayObject);
     // Bind textures
@@ -119,6 +120,8 @@ void TestObject::render() {
 
     // Set active shader and assign textures
     _shader->use();
+    _shader->setViewMatrix(viewMatrix);
+    _shader->setProjectionMatrix(projectionMatrix);
     _shader->setValue("texture1", 0);
     _shader->setValue("texture2", 1);
     
@@ -127,8 +130,8 @@ void TestObject::render() {
 
     // Draw a single box
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f));
-    model = glm::rotate(model, glm::radians(-rotation), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::translate(model, _position);
+    // model = glm::rotate(model, glm::radians(-rotation), glm::vec3(1.0f, 0.0f, 0.0f));
     float rotateY = 360.0f * (1.0f + sin(2.0f * M_PI * 0.2f * glfwGetTime()));
     model = glm::rotate(model, glm::radians(rotateY), glm::vec3(0.0f, 1.0f, 0.0f));
     _shader->setModelMatrix(model);
