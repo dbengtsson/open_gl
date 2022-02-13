@@ -25,7 +25,7 @@ private:
     }
 
     void createProjectionMatrix() {
-        _projection = glm::perspective(_fov, _aspectRatio, 0.1f, 100.0f);
+        _projection = glm::perspective(_fov, _aspectRatio, 0.1f, 1000.0f);
     }
 public:
     Camera(float fov, float aspectRatio);
@@ -52,12 +52,8 @@ Camera::Camera(float fov, float aspectRatio) {
     _position = glm::vec3(0.0f, 0.0f, 4.0f);
     _lookAt = glm::vec3(0.0f);
     _direction = glm::normalize(position() - lookAt());
-    _up = glm::vec3(0.0f, 1.0f, 0.0f);
-    // glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-    // glm::vec3 cameraRight = glm::normalize(glm::cross(up, _position));
-    // glm::vec3 cameraUp = glm::cross(_direction, cameraRight);
-    // _up = cameraUp; // TODO: Fix
-
+    glm::vec3 cameraRight = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), _position));
+    _up = glm::cross(_direction, cameraRight);
     _fov = fov;
     _aspectRatio = aspectRatio;
 

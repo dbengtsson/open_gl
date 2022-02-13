@@ -4,7 +4,7 @@
 		{
 			"type": "shell",
 			"label": "G++ build",
-			"command": "g++ src/*.cpp src/*.c -o main.exe -g -Iincludes -Llib -l:libglfw3.a -l:libfreetype.a -lglfw3 -lopengl32 -lglu32 -lgdi32",
+			"command": "g++ src/*.cpp src/*.c -o main.exe -g -Iincludes -Llib -lfreetype -lglfw3 -lopengl32 -lglu32 -lgdi32",
 			"args": [],
 			"options": {
 				"cwd": "${workspaceFolder}"

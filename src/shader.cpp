@@ -106,6 +106,11 @@ void Shader::setValue(const std::string &name, int value) {
     glUniform1i(glGetUniformLocation(_id, name.c_str()), value);
 }
 
+void Shader::setValue(const std::string &name, glm::vec3 value) {
+    unsigned int transformLoc = glGetUniformLocation(_id, name.c_str());
+    glUniform3fv(transformLoc, 1, glm::value_ptr(value));
+}
+
 void Shader::setValue(const std::string &name, glm::mat4 value) {
     unsigned int transformLoc = glGetUniformLocation(_id, name.c_str());
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(value));

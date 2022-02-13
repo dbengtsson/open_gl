@@ -6,7 +6,7 @@
 #include "image.h"
 
 Texture::Texture(const char* imagePath) {
-    m_id = loadTexture(imagePath);
+    _id = loadTexture(imagePath);
 }
 
 unsigned int Texture::loadTexture(const char* imagePath) {
@@ -35,5 +35,6 @@ unsigned int Texture::loadTexture(const char* imagePath) {
         throw std::runtime_error("Failed to load texture:");
     }
     
+    std::cout << texture << std::endl;
     return texture;
 }

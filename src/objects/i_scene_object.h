@@ -12,7 +12,7 @@ public:
     // ISceneObject(const Camera& cam);
     virtual void update(unsigned int deltaTime) = 0;
     // virtual void render() = 0;
-    virtual void render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) = 0;
+    virtual void render() = 0;
 
     const glm::vec3& position() { return _position; };
     void position(const glm::vec3& position) { _position = position; };

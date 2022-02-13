@@ -15,6 +15,7 @@ public:
     void setValue(const std::string &name, double value);
     void setValue(const std::string &name, int value);
     void setValue(const std::string &name, glm::mat4 value);
+    void setValue(const std::string &name, glm::vec3 value);
 
     void setProjectionMatrix(const glm::mat4& matrix);
     void setViewMatrix(const glm::mat4& matrix);

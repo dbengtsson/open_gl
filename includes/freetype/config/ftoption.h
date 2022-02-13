@@ -123,7 +123,7 @@ FT_BEGIN_HEADER
    * When this macro is not defined, FreeType offers alternative LCD
    * rendering technology that produces excellent output.
    */
-#define FT_CONFIG_OPTION_SUBPIXEL_RENDERING
+/* #define FT_CONFIG_OPTION_SUBPIXEL_RENDERING */
 
 
   /**************************************************************************
@@ -220,7 +220,7 @@ FT_BEGIN_HEADER
    *   options set by those programs have precedence, overwriting the value
    *   here with the configured one.
    */
-#define FT_CONFIG_OPTION_SYSTEM_ZLIB
+/* #define FT_CONFIG_OPTION_SYSTEM_ZLIB */
 
 
   /**************************************************************************
@@ -240,7 +240,7 @@ FT_BEGIN_HEADER
    *   options set by those programs have precedence, overwriting the value
    *   here with the configured one.
    */
-#define FT_CONFIG_OPTION_USE_BZIP2
+/* #define FT_CONFIG_OPTION_USE_BZIP2 */
 
 
   /**************************************************************************
@@ -269,7 +269,7 @@ FT_BEGIN_HEADER
    *   options set by those programs have precedence, overwriting the value
    *   here with the configured one.
    */
-#define FT_CONFIG_OPTION_USE_PNG
+/* #define FT_CONFIG_OPTION_USE_PNG */
 
 
   /**************************************************************************
@@ -286,7 +286,7 @@ FT_BEGIN_HEADER
    *   options set by those programs have precedence, overwriting the value
    *   here with the configured one.
    */
-#define FT_CONFIG_OPTION_USE_HARFBUZZ
+/* #define FT_CONFIG_OPTION_USE_HARFBUZZ */
 
 
   /**************************************************************************
@@ -302,7 +302,7 @@ FT_BEGIN_HEADER
    *   options set by those programs have precedence, overwriting the value
    *   here with the configured one.
    */
-#define FT_CONFIG_OPTION_USE_BROTLI
+/* #define FT_CONFIG_OPTION_USE_BROTLI */
 
 
   /**************************************************************************

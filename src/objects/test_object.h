@@ -7,21 +7,11 @@
 
 #include "../shader.h"
 #include "../texture.h"
+#include "../resource_mgr.h"
 
-const char* VERTEX_SHADER_FILEPATH = "hlsl/shader.vert";
-const char* FRAGMENT_SHADER_FILEPATH = "hlsl/shader.frag";
 const char* TEXTURE0_FILEPATH = "res/karingo.tga";
 const char* TEXTURE1_FILEPATH = "res/hunt.tga";
-
-class TestObject : public ISceneObject {
-private:
-    float rotation = 30.0f;
-    // TODO: Do not have these per object basis.
-    // Pass in scene and have a resource manager there
-    unsigned int vertexBufferObject, vertexArrayObject, EBO;
-    Texture* m_loadedTextures[2];
-    Shader* _shader;
-    const float vertices[180] = {
+const float vertices[180] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -64,64 +54,43 @@ private:
         -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
+
+class TestObject : public ISceneObject {
+private:
+    float rotation = 30.0f;
+    // TODO: Do not have these per object basis.
+    // Pass in scene and have a resource manager there
+    unsigned int _loadedTextures[2];
+    Shader* _shader;
 public:
     ~TestObject();
-    TestObject();
+    TestObject(ResourceMgr& resourceMgr, Shader* shader);
     void update(unsigned int deltaTime) override;
-    void render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) override;
-
+    void render() override;
     void position(const glm::vec3& position) { _position = position; }
 };
 
-TestObject::~TestObject() {
-    unsigned int arr_size = sizeof(m_loadedTextures)/sizeof(m_loadedTextures[0]);
-    for(int i = 0; i < arr_size; i++) {
-        delete m_loadedTextures[i]; // delete the objects in the array also, who cares rn
-    }
-}
+TestObject::~TestObject() {}
 
-TestObject::TestObject() {
+TestObject::TestObject(ResourceMgr& resourceMgr, Shader* shader) {
+    _shader = shader;
     _position = glm::vec3(0.0f);
-    _shader = new Shader(VERTEX_SHADER_FILEPATH, FRAGMENT_SHADER_FILEPATH);
-
-    glGenVertexArrays(1, &vertexArrayObject);
-    glGenBuffers(1, &vertexBufferObject);
-    glGenBuffers(1, &EBO);
-
-    glBindVertexArray(vertexArrayObject);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // Vertex positions
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // Texture UV in vertice array
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glBindVertexArray(0);
-
     // Load textures
-    m_loadedTextures[0] = new Texture(TEXTURE0_FILEPATH);
-    m_loadedTextures[1] = new Texture(TEXTURE1_FILEPATH);
+    _loadedTextures[0] = resourceMgr.loadTexture(TEXTURE0_FILEPATH);
+    _loadedTextures[1] = resourceMgr.loadTexture(TEXTURE1_FILEPATH);
 }
 
 void TestObject::update(unsigned int deltaTime) {};
 
-void TestObject::render(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
-    // Bind which VAO OpenGL should use
-    glBindVertexArray(vertexArrayObject);
+void TestObject::render() {
     // Bind textures
     glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
-    glBindTexture(GL_TEXTURE_2D, m_loadedTextures[0]->id());
+    glBindTexture(GL_TEXTURE_2D, _loadedTextures[0]);
 
     glActiveTexture(GL_TEXTURE1); // activate the texture unit first before binding texture
-    glBindTexture(GL_TEXTURE_2D, m_loadedTextures[1]->id());
+    glBindTexture(GL_TEXTURE_2D, _loadedTextures[1]);
 
     // Set active shader and assign textures
-    _shader->use();
-    _shader->setViewMatrix(viewMatrix);
-    _shader->setProjectionMatrix(projectionMatrix);
     _shader->setValue("texture1", 0);
     _shader->setValue("texture2", 1);
     
@@ -139,8 +108,7 @@ void TestObject::render(const glm::mat4& viewMatrix, const glm::mat4& projection
     // Draw all triangles
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
-    // Undbind VAO and texture from OpenGL
-    glBindVertexArray(0);
+    // Unbind texture for next object
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // _shader->use();
