@@ -86,6 +86,11 @@ public:
         uint32_t uniformLocation = glGetUniformLocation(m_program, name);
         glUniform1f(uniformLocation, value);
     }
+
+    void setUniform(const char* name, int value) {
+        uint32_t uniformLocation = glGetUniformLocation(m_program, name);
+        glUniform1i(uniformLocation, value);
+    }
 };
 
 #endif
