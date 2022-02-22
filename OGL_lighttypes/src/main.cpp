@@ -136,8 +136,8 @@ void generateCubes() {
 }
 
 void initScene() {
-    objectShader = Shader("basic_shader.vert", "basic_shader.frag");
-    lightShader = Shader("light_shader.vert", "light_shader.frag");
+    objectShader = Shader("res/basic_shader.vert", "res/basic_shader.frag");
+    lightShader = Shader("res/light_shader.vert", "res/light_shader.frag");
     diffuseMap = Texture("res/container.png");
     specularMap = Texture("res/container_specular.png");
     generateCubes();
